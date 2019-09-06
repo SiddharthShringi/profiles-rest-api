@@ -6,6 +6,8 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import filters
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.settings import api_settings
 
 from .models import UserProfile
 from .serializers import HelloSerializer, UserProfileSerializer
@@ -15,7 +17,7 @@ from .permissions import UpdateOwnProfile
 class HelloAPIView(APIView):
     """Test API View"""
     serializer_class = HelloSerializer
-    
+
     def get(self, request, format=None):
         """Return an Hello message"""
         return Response({'message': 'hello world!'})
@@ -44,7 +46,7 @@ class HelloAPIView(APIView):
 class HelloViewSet(viewsets.ViewSet):
     """Test API ViewSets"""
     serializer_class = HelloSerializer
-    
+
     def list(self, request):
         return Response({'message': 'hello world!'})
 
@@ -80,3 +82,9 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     filter_backends = (filters.SearchFilter, )
     search_fields = ('name', 'email')
+
+
+class UserLoginAPIView(ObtainAuthToken):
+    """Handle creating authentication tokens"""
+
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
